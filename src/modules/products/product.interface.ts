@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+import { Model } from "mongoose";
 
 export type TVariant = {
     type: string;
@@ -17,6 +19,11 @@ export type TVariant = {
     tags: string[];
     variants: [TVariant];
     inventory: TInventory;
+    slug:string
   };
+
+  export interface ProductModel extends Model<TProduct> {
+    createSlug(payload:TProduct): number;
+  }
 
   

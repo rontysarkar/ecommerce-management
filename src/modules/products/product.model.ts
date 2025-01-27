@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { TInventory, TProduct, TVariant } from "./product.interface";
+import { ProductModel, TInventory, TProduct, TVariant } from "./product.interface";
 
 
 const VariantSchema = new Schema<TVariant>({
@@ -12,7 +12,7 @@ const VariantSchema = new Schema<TVariant>({
     inStock: { type: Boolean, required: true },
   });
 
-  const ProductSchema = new Schema<TProduct>(
+  const ProductSchema = new Schema<TProduct,ProductModel>(
     {
       name: { type: String, required: true },
       description: { type: String, required: true },
@@ -21,8 +21,17 @@ const VariantSchema = new Schema<TVariant>({
       tags: { type: [String], required: true },
       variants: { type: [VariantSchema], required: false },
       inventory: { type: InventorySchema, required: true },
+      slug:String,
     },
     { timestamps: true }
   );
 
-  export const Product = model<TProduct>('Product',ProductSchema)
+  ProductSchema.static('createSlug', function createSlug(payload:TProduct) {
+     const name = payload.name.replace(/\s+/g,"");
+     const price = payload.price;
+     const slug = `${name}-${price}`
+     return slug
+  });
+
+
+  export const Product = model<TProduct,ProductModel>('Product',ProductSchema)
